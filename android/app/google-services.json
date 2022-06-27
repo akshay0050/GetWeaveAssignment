@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "212501305362",
+    "project_id": "demofirestore-7ab07",
+    "storage_bucket": "demofirestore-7ab07.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:212501305362:android:087028714be81df80f20cb",
+        "android_client_info": {
+          "package_name": "com.example.verygoodcore.getweaveassignment"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "212501305362-mntpfsne3ogrevm99vssrftjs3jc1igb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDOnc2c2bXpwZjuWVghHjJVz2S36p415ek"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "212501305362-mntpfsne3ogrevm99vssrftjs3jc1igb.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
