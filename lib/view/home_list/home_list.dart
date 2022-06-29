@@ -6,6 +6,10 @@ import 'package:flutter_app/models/user_data_model.dart';
 import 'package:flutter_app/repository/data_repository.dart';
 import 'package:flutter_app/view/common_widget/user_data_card.dart';
 import 'package:flutter_app/view/dialogs/add_data_dialog.dart';
+import 'package:flutter_app/view/login/login_page.dart';
+import 'package:hive_flutter/hive_flutter.dart';
+
+import '../../utility/utils.dart';
 
 
 class HomeList extends StatefulWidget {
@@ -18,6 +22,14 @@ class _HomeListState extends State<HomeList> {
   final DataRepository repository = DataRepository();
   final boldStyle =
       const TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold);
+  String userName = '';
+
+  @override
+  void initState() {
+    super.initState();
+    final myDbObj = Hive.box(Utils.dbName);
+    userName =  myDbObj.get(Utils.userNameKey, defaultValue: '');
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +39,20 @@ class _HomeListState extends State<HomeList> {
   Widget _buildHome(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('User Data'),
+        title: Text('Welcome $userName'),
+        actions: [
+          IconButton(
+            icon: Icon(
+              Icons.logout,
+              color: Colors.white,
+            ),
+            onPressed: () async{
+              // do something
+              bool isLogout = await showAlertDialog(context);
+              if(isLogout) Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => LoginPage()));
+            },
+          )
+        ],
       ),
       body: getDataFromDb(context),
       floatingActionButton: FloatingActionButton(
@@ -63,7 +88,7 @@ class _HomeListState extends State<HomeList> {
   Widget _buildList(BuildContext context, List<DocumentSnapshot> snapshot) {
     return snapshot.length > 0 ? ListView(
       padding: const EdgeInsets.only(top: 20.0),
-      children: snapshot.map((data) => _buildListItem(context, data)).toList() ,
+      children: snapshot.map((data) => _buildListItem(context, data)).toList().reversed.toList() ,
     ):
     noDataWidget(context);
   }
@@ -120,5 +145,42 @@ class _HomeListState extends State<HomeList> {
     }, onDelete: (UserData data) {
       repository.deleteUserData(userData);
     },);
+  }
+
+  Future showAlertDialog(BuildContext context) async{
+
+    // set up the buttons
+    Widget cancelButton = TextButton(
+      child: Text("Cancel"),
+      onPressed:  () {
+        Navigator.pop(context,false);
+      },
+    );
+    Widget continueButton = TextButton(
+      child: Text("Yes"),
+      onPressed:  () async{
+        await repository.logoutUser();
+        Navigator.pop(context,true);
+
+      },
+    );
+
+    // set up the AlertDialog
+    AlertDialog alert = AlertDialog(
+      title: Text("Logout"),
+      content: Text("Hey $userName Do you really want to Logout?"),
+      actions: [
+        cancelButton,
+        continueButton,
+      ],
+    );
+
+    // show the dialog
+    return await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
   }
 }

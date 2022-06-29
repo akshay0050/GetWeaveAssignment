@@ -1,6 +1,9 @@
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_app/models/user_data_model.dart';
+import 'package:flutter_app/utility/utils.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 
 
 class DataRepository {
@@ -11,8 +14,8 @@ class DataRepository {
     return collection.snapshots();
   }
 
-  Future<DocumentReference> addUserData(UserData userData) {
-    return collection.add(userData.toJson());
+  Future addUserData(UserData userData) {
+    return collection.doc(new DateTime.now().millisecondsSinceEpoch.toString()).set(userData.toJson());
   }
 
   Future<void> updateUserData(UserData userData) async {
@@ -21,5 +24,11 @@ class DataRepository {
 
   Future<void> deleteUserData(UserData userData) async {
     await collection.doc(userData.referenceId).delete();
+  }
+
+  Future<void> logoutUser() async{
+  await FirebaseAuth.instance.signOut();
+  final myDbObj = Hive.box(Utils.dbName);
+  await myDbObj.delete(Utils.userNameKey);
   }
 }

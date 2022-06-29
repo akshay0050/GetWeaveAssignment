@@ -1,5 +1,6 @@
 class Utils {
-
+  static String dbName = "user_cred";
+  static String userNameKey = "user_name";
   static String isEmpty(String input) {
     if (input.isNotEmpty) return input;
     return '';
